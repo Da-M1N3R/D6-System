@@ -9,10 +9,6 @@
       "groups": [6]
     },
     {
-      "name": "Buggy Choke",
-      "groups": [1, 2, 3, 4, 5, 6]
-    },
-    {
       "name": "Kimura",
       "groups": [4]
     },
@@ -33,8 +29,12 @@
       "groups": [3]
     },
     {
-      "name": "Wristlock",
-      "groups": [1, 2]
+      "name": "Aoki Lock",
+      "groups": [3]
+    },
+    {
+      "name": "Mikey Lock",
+      "groups": [3]
     },
     {
       "name": "Armbar",
@@ -59,6 +59,18 @@
     {
       "name": "North-South Choke",
       "groups": [5]
+    },
+    {
+      "name": "Toe hold",
+      "groups": [3, 4]
+    },
+    {
+      "name": "Buggy Choke",
+      "groups": [1, 2, 3, 4, 5, 6]
+    },
+    {
+      "name": "Wristlock",
+      "groups": [1, 2]
     },
     {
       "name": "GI - Bow and Arrow Choke",
