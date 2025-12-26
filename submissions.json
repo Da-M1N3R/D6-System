@@ -57,6 +57,10 @@
       "groups": [2, 3]
     },
     {
+      "name": "Bicep Slicer",
+      "groups": [2]
+    },
+    {
       "name": "North-South Choke",
       "groups": [5]
     },
