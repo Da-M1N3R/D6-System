@@ -82,6 +82,13 @@
         margin: 30px 0;
       }
 
+      .dice-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
       .main-dice {
         width: 300px;
         height: 300px;
@@ -146,17 +153,98 @@
         transform: scale(0.95);
       }
 
+      .rolled-number-text {
+        font-size: 2rem;
+        color: #f39c12;
+        text-align: center;
+        min-height: 40px;
+        /* text-transform: uppercase; */
+        letter-spacing: 2px;
+        /* text-shadow: 0 0 10px rgba(243, 156, 18, 0.5); */
+      }
+      /* Font styles for each rolled number */
+      @font-face {
+        font-family: "Apocalypse";
+        src: url("fonts/Apocalypse_Now.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "GodFather";
+        src: url("fonts/Corleone_Regular.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "OnePiece";
+        src: url("fonts/one_piece_font.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Zenzai";
+        src: url("fonts/ZenzaiItache.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "HarryPotter";
+        src: url("fonts/harryp.ttf") format("truetype");
+      }
+      @font-face {
+        font-family: "Blazed";
+        src: url("fonts/Blazed.ttf") format("truetype");
+      }
+      .font-1 {
+        font-family: "Apocalypse", cursive;
+        font-size: 120px;
+        background: linear-gradient(45deg, #00ff00, #88ff00, #ffff00);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .font-2 {
+        font-family: "GodFather", cursive;
+        font-size: 100px;
+        background: linear-gradient(45deg, #ff00ff, #ff0088, #cc00cc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .font-3 {
+        font-family: "OnePiece", cursive;
+        font-size: 100px;
+        background: linear-gradient(45deg, blue, #a0dfff, #e0f7ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .font-4 {
+        font-family: "Zenzai", cursive;
+        font-size: 100px;
+        background: linear-gradient(45deg, #00ffff, #0088ff, #0044ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .font-5 {
+        font-family: "HarryPotter", cursive;
+        font-size: 80px;
+        background: linear-gradient(45deg, #ffd700, #ff8800, #ffaa00);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .font-6 {
+        font-family: "Blazed", cursive;
+        font-size: 100px;
+        background: linear-gradient(45deg, white, #ff4444, red);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
       .submissions-main-container {
         width: 100%;
         max-width: 800px;
         margin-top: 20px;
-      }
-
-      .view-controls {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-bottom: 20px;
       }
 
       /* Dice View Styles */
@@ -454,6 +542,10 @@
           gap: 20px;
         }
 
+        .rolled-number-text {
+          font-size: 1.5rem;
+        }
+
         .modal {
           max-width: 90%;
           padding: 20px;
@@ -505,15 +597,17 @@
 
     <!-- Dice Rolling Section -->
     <div class="dice-roll-section">
-      <div class="main-dice" id="mainDice">1</div>
-      <button
-        class="roll-button-large"
-        id="rollDiceBtn"
-        onclick="rollDice()"
-        title="Roll Dice"
-      >
-        🎲
-      </button>
+      <div class="dice-column">
+        <div
+          class="main-dice"
+          id="mainDice"
+          onclick="rollDice()"
+          style="font-family: OnePiece, cursive"
+        >
+          0
+        </div>
+        <div id="6slot" class="rolled-number-text"></div>
+      </div>
     </div>
 
     <!-- Submissions Main Container -->
@@ -590,7 +684,7 @@
     <!-- Info Modal -->
     <div class="modal" id="infoModal">
       <div class="modal-header">
-        <h2 class="modal-title">Technique Number Meaning</h2>
+        <h2 class="modal-title">‼️Remember, Just Have Fun</h2>
         <button class="close-button" onclick="closeModal()">&times;</button>
       </div>
 
@@ -602,15 +696,7 @@
         <div class="number-descriptions">
           <div class="number-item">
             <span class="number-label">1.</span>
-            <span class="description-text"
-              >If you get a buggy choke, take it.</span
-            >
-          </div>
-          <div class="number-item">
-            <span class="number-label">2.</span>
-            <span class="description-text"
-              >All is well.</span
-            >
+            <span class="description-text">If you get a buggy, rip it.</span>
           </div>
         </div>
       </div>
@@ -654,13 +740,12 @@
           </div>
         </div>
       </div>
-      </div>
     </div>
 
     <script>
       let submissionsData = null;
       let currentView = "by-submission";
-      let rolledNumber = 1; // Default to 1
+      let rolledNumber = 0; // Default to 0
 
       // Function to load and display submissions
       async function loadSubmissions() {
@@ -688,7 +773,6 @@
                 submissionElement.className = "submission-item";
                 submissionElement.innerHTML = `
                   ${submission.name}
-                  
                 `;
                 container.appendChild(submissionElement);
               }
@@ -761,6 +845,48 @@
           rolledNumber = Math.floor(Math.random() * 6) + 1;
           mainDice.textContent = rolledNumber;
           mainDice.classList.remove("rolling");
+
+          // Update special text based on rolled number
+          const textSlot = document.getElementById("6slot");
+
+          // Clear ALL font classes explicitly before adding new one
+          textSlot.classList.remove(
+            "font-1",
+            "font-2",
+            "font-3",
+            "font-4",
+            "font-5",
+            "font-6"
+          );
+          switch (rolledNumber) {
+            case 1:
+              textSlot.textContent = "-Warpath";
+              textSlot.classList.add("font-1");
+              break;
+            case 2:
+              textSlot.textContent = "Aella, The Fairy";
+              textSlot.classList.add("font-2");
+              break;
+            case 3:
+              textSlot.textContent = "LImBO";
+              textSlot.classList.add("font-3");
+              break;
+            case 4:
+              textSlot.textContent = "Kurogaki no Hime";
+              textSlot.classList.add("font-4");
+              break;
+            case 5:
+              textSlot.textContent = "Empty, Infinity Castle";
+              textSlot.classList.add("font-5");
+              break;
+            case 6:
+              textSlot.textContent = "Dracarys";
+              textSlot.classList.add("font-6");
+              break;
+            default:
+              textSlot.textContent = "";
+          }
+
           applyHighlights();
         }, 500);
       }
