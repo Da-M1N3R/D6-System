@@ -1,0 +1,76 @@
+{
+  "submissions": [
+    {
+      "name": "Rear Naked Choke",
+      "groups": [6]
+    },
+    {
+      "name": "D'arce",
+      "groups": [6]
+    },
+    {
+      "name": "Buggy Choke",
+      "groups": [1, 2, 3, 4, 5, 6]
+    },
+    {
+      "name": "Kimura",
+      "groups": [4]
+    },
+    {
+      "name": "Americana",
+      "groups": [4]
+    },
+    {
+      "name": "Ezekiel Choke",
+      "groups": [5]
+    },
+    {
+      "name": "Heel Hook",
+      "groups": [3]
+    },
+    {
+      "name": "Straight Ankle Lock",
+      "groups": [3]
+    },
+    {
+      "name": "Wristlock",
+      "groups": [1, 2]
+    },
+    {
+      "name": "Armbar",
+      "groups": [2]
+    },
+    {
+      "name": "Triangle Choke",
+      "groups": [5, 6]
+    },
+    {
+      "name": "Guillotine",
+      "groups": [5, 6]
+    },
+    {
+      "name": "Omoplata",
+      "groups": [4]
+    },
+    {
+      "name": "Kneebar",
+      "groups": [2, 3]
+    },
+    {
+      "name": "North-South Choke",
+      "groups": [5]
+    },
+    {
+      "name": "GI - Bow and Arrow Choke",
+      "groups": [5]
+    },
+    {
+      "name": "GI - Cross Choke",
+      "groups": [5]
+    },
+    {
+      "name": "GI - Baseball Choke",
+      "groups": [5]
+    }
+  ]
+}

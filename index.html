@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BJJ Technique Dice</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .header {
+        position: relative;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .header-controls {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .control-icon {
+        width: 50px;
+        height: 50px;
+        background: #f39c12;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #1a1a2e;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 10px rgba(243, 156, 18, 0.3);
+      }
+
+      .control-icon:hover {
+        background: #e67e22;
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(243, 156, 18, 0.5);
+      }
+
+      .control-icon.active {
+        background: #27ae60;
+        color: white;
+      }
+
+      h1 {
+        font-size: 4rem;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        color: #f39c12;
+        text-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+      }
+
+      .dice-roll-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        margin: 30px 0;
+      }
+
+      .main-dice {
+        width: 300px;
+        height: 300px;
+        background: white;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 6rem;
+        font-weight: bold;
+        color: #1a1a2e;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        user-select: none;
+        transition: all 0.3s ease;
+      }
+
+      .main-dice.rolling {
+        animation: roll 0.5s ease-in-out;
+      }
+
+      @keyframes roll {
+        0% {
+          transform: rotate(0deg) scale(1);
+        }
+        50% {
+          transform: rotate(180deg) scale(1.1);
+        }
+        100% {
+          transform: rotate(360deg) scale(1);
+        }
+      }
+
+      .main-dice.highlighted {
+        background: #f39c12;
+        box-shadow: 0 0 40px rgba(243, 156, 18, 0.9);
+        transform: scale(1.05);
+      }
+
+      .roll-button-large {
+        width: 80px;
+        height: 80px;
+        background: #27ae60;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 2.5rem;
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        border: none;
+      }
+
+      .roll-button-large:hover {
+        background: #229954;
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6);
+      }
+
+      .roll-button-large:active {
+        transform: scale(0.95);
+      }
+
+      .submissions-main-container {
+        width: 100%;
+        max-width: 800px;
+        margin-top: 20px;
+      }
+
+      .view-controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      /* Dice View Styles */
+      .dice-container {
+        display: none;
+        gap: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 20px 0;
+      }
+
+      .die-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        flex: 0 1 auto;
+      }
+
+      .die-letter {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #e74c3c;
+        text-transform: uppercase;
+      }
+
+      .die {
+        width: 100px;
+        height: 100px;
+        background: white;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: bold;
+        color: #1a1a2e;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        user-select: none;
+        transition: all 0.3s ease;
+      }
+
+      .die.highlighted {
+        background: #f39c12;
+        box-shadow: 0 0 25px rgba(243, 156, 18, 0.9);
+        transform: scale(1.1);
+      }
+
+      .die-title {
+        font-size: 1rem;
+        text-align: center;
+        max-width: 120px;
+        color: #f39c12;
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+
+      .submissions-container {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 10px;
+        min-width: 120px;
+        max-width: 150px;
+      }
+
+      .submission-item {
+        background: rgba(243, 156, 18, 0.2);
+        color: #f39c12;
+        padding: 5px 8px;
+        margin: 4px 0;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        text-align: center;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .submission-item:hover {
+        background: rgba(243, 156, 18, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .submission-item.highlighted {
+        background: rgba(243, 156, 18, 0.7);
+        box-shadow: 0 0 15px rgba(243, 156, 18, 0.7);
+        color: #1a1a2e;
+        font-weight: bold;
+      }
+
+      /* Submission View Styles */
+      .submissions-by-name-container {
+        display: block;
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+      }
+
+      .submission-row {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: background 0.3s ease;
+      }
+
+      .submission-row:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 5px;
+      }
+
+      .submission-name {
+        flex: 0.6;
+        font-size: 1rem;
+        color: #f39c12;
+        font-weight: 500;
+      }
+
+      .dice-numbers-inline {
+        display: flex;
+        gap: 4px;
+      }
+
+      .dice-number-inline {
+        background: white;
+        color: #1a1a2e;
+        padding: 2px 6px;
+        border-radius: 10px;
+        font-size: 2rem;
+        font-weight: bold;
+        border: 1px solid rgba(231, 76, 60, 0.3);
+        height: 50px;
+        width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .dice-number-inline.highlighted {
+        background: #f39c12;
+        color: #1a1a2e;
+        box-shadow: 0 0 15px rgba(243, 156, 18, 0.9);
+        transform: scale(1.15);
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #1a1a2e;
+        border: 2px solid #f39c12;
+        border-radius: 15px;
+        padding: 30px;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        z-index: 1001;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f39c12;
+      }
+
+      .modal-title {
+        font-size: 1.5rem;
+        color: #f39c12;
+        font-weight: bold;
+      }
+
+      .close-button {
+        background: none;
+        border: none;
+        color: #e74c3c;
+        font-size: 2rem;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: color 0.3s ease;
+      }
+
+      .close-button:hover {
+        color: #c0392b;
+      }
+
+      .technique-section {
+        margin-bottom: 25px;
+      }
+
+      .technique-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .technique-letter {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #e74c3c;
+        background: rgba(231, 76, 60, 0.1);
+        padding: 5px 10px;
+        border-radius: 5px;
+      }
+
+      .technique-name {
+        font-size: 1.2rem;
+        color: #f39c12;
+        font-weight: bold;
+      }
+
+      .number-descriptions {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 8px;
+        padding: 15px;
+        margin-left: 10px;
+      }
+
+      .number-item {
+        margin-bottom: 10px;
+        padding: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border-left: 3px solid #f39c12;
+        border-radius: 4px;
+      }
+
+      .number-label {
+        font-weight: bold;
+        color: #e74c3c;
+        display: inline-block;
+        width: 20px;
+      }
+
+      .description-text {
+        color: #bdc3c7;
+        margin-left: 10px;
+      }
+
+      .loading-text {
+        color: #bdc3c7;
+        font-size: 0.8rem;
+        text-align: center;
+        padding: 10px;
+      }
+
+      .error-text {
+        color: #e74c3c;
+        font-size: 0.8rem;
+        text-align: center;
+        padding: 10px;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+
+        .main-dice {
+          width: 150px;
+          height: 150px;
+          font-size: 4rem;
+        }
+
+        .roll-button-large {
+          width: 60px;
+          height: 60px;
+          font-size: 2rem;
+        }
+
+        .dice-roll-section {
+          gap: 20px;
+        }
+
+        .modal {
+          max-width: 90%;
+          padding: 20px;
+        }
+
+        .control-icon {
+          width: 45px;
+          height: 45px;
+          font-size: 1.2rem;
+        }
+
+        .submissions-container {
+          min-width: 100px;
+          max-width: 120px;
+        }
+
+        .submission-item {
+          font-size: 0.75rem;
+          padding: 4px 6px;
+        }
+
+        .submission-row {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 5px;
+        }
+
+        .dice-numbers-inline {
+          margin-top: 5px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>D6 System</h1>
+      <div class="header-controls">
+        <div
+          class="control-icon"
+          id="toggleViewBtn"
+          onclick="toggleView()"
+          title="Switch View"
+        >
+          <span id="toggleIcon">📋</span>
+        </div>
+        <div class="control-icon" id="infoIcon" onclick="openModal()">i</div>
+      </div>
+    </div>
+
+    <!-- Dice Rolling Section -->
+    <div class="dice-roll-section">
+      <div class="main-dice" id="mainDice">1</div>
+      <button
+        class="roll-button-large"
+        id="rollDiceBtn"
+        onclick="rollDice()"
+        title="Roll Dice"
+      >
+        🎲
+      </button>
+    </div>
+
+    <!-- Submissions Main Container -->
+    <div class="submissions-main-container">
+      <!-- Dice View -->
+      <div class="dice-container" id="diceContainer">
+        <div class="die-wrapper" data-die-number="1">
+          <div class="die-letter">W</div>
+          <div class="die">1</div>
+          <div class="die-title">Wildcard</div>
+          <div class="submissions-container" id="submissions-1">
+            <div class="loading-text">Loading...</div>
+          </div>
+        </div>
+
+        <div class="die-wrapper" data-die-number="2">
+          <div class="die-letter">A</div>
+          <div class="die">2</div>
+          <div class="die-title">Armbar</div>
+          <div class="submissions-container" id="submissions-2">
+            <div class="loading-text">Loading...</div>
+          </div>
+        </div>
+
+        <div class="die-wrapper" data-die-number="3">
+          <div class="die-letter">L</div>
+          <div class="die">3</div>
+          <div class="die-title">Leglock</div>
+          <div class="submissions-container" id="submissions-3">
+            <div class="loading-text">Loading...</div>
+          </div>
+        </div>
+
+        <div class="die-wrapper" data-die-number="4">
+          <div class="die-letter">K</div>
+          <div class="die">4</div>
+          <div class="die-title">Kimura</div>
+          <div class="submissions-container" id="submissions-4">
+            <div class="loading-text">Loading...</div>
+          </div>
+        </div>
+
+        <div class="die-wrapper" data-die-number="5">
+          <div class="die-letter">E</div>
+          <div class="die">5</div>
+          <div class="die-title">Ezekiel</div>
+          <div class="submissions-container" id="submissions-5">
+            <div class="loading-text">Loading...</div>
+          </div>
+        </div>
+
+        <div class="die-wrapper" data-die-number="6">
+          <div class="die-letter">D</div>
+          <div class="die">6</div>
+          <div class="die-title">D'arce</div>
+          <div class="submissions-container" id="submissions-6">
+            <div class="loading-text">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submission View -->
+      <div
+        class="submissions-by-name-container"
+        id="submissionsByNameContainer"
+      >
+        <!-- Will be populated by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
+
+    <!-- Info Modal -->
+    <div class="modal" id="infoModal">
+      <div class="modal-header">
+        <h2 class="modal-title">Technique Number Meaning</h2>
+        <button class="close-button" onclick="closeModal()">&times;</button>
+      </div>
+
+      <div class="technique-section">
+        <div class="technique-header">
+          <span class="technique-letter">S</span>
+          <span class="technique-name">Special</span>
+        </div>
+        <div class="number-descriptions">
+          <div class="number-item">
+            <span class="number-label">1.</span>
+            <span class="description-text"
+              >If you get a buggy choke, take it.</span
+            >
+          </div>
+          <div class="number-item">
+            <span class="number-label">2.</span>
+            <span class="description-text"
+              >All is well.</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="technique-section">
+        <div class="technique-header">
+          <span class="technique-letter">D6</span>
+          <span class="technique-name">Dice Number</span>
+        </div>
+        <div class="number-descriptions">
+          <div class="number-item">
+            <span class="number-label">1.</span>
+            <span class="description-text"
+              >Rare submissions /Some modified version of a common submission.
+              Also basically everything goes.</span
+            >
+          </div>
+          <div class="number-item">
+            <span class="number-label">2.</span>
+            <span class="description-text"
+              >Everything arms & extension of joint.</span
+            >
+          </div>
+          <div class="number-item">
+            <span class="number-label">3.</span>
+            <span class="description-text">Everything legs.</span>
+          </div>
+          <div class="number-item">
+            <span class="number-label">4.</span>
+            <span class="description-text">Rotation of joint.</span>
+          </div>
+          <div class="number-item">
+            <span class="number-label">5.</span>
+            <span class="description-text"
+              >Pressure, pain, air choke or gi choke.</span
+            >
+          </div>
+          <div class="number-item">
+            <span class="number-label">6.</span>
+            <span class="description-text">All blood choke.</span>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <script>
+      let submissionsData = null;
+      let currentView = "by-submission";
+      let rolledNumber = 1; // Default to 1
+
+      // Function to load and display submissions
+      async function loadSubmissions() {
+        try {
+          const response = await fetch("submissions.json");
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          submissionsData = await response.json();
+
+          // Clear all submission containers
+          for (let i = 1; i <= 6; i++) {
+            const container = document.getElementById(`submissions-${i}`);
+            container.innerHTML = "";
+          }
+
+          // Distribute submissions to their groups (by dice)
+          submissionsData.submissions.forEach((submission) => {
+            submission.groups.forEach((groupNumber) => {
+              const container = document.getElementById(
+                `submissions-${groupNumber}`
+              );
+              if (container) {
+                const submissionElement = document.createElement("div");
+                submissionElement.className = "submission-item";
+                submissionElement.innerHTML = `
+                  ${submission.name}
+                  
+                `;
+                container.appendChild(submissionElement);
+              }
+            });
+          });
+
+          // Check for empty containers
+          for (let i = 1; i <= 6; i++) {
+            const container = document.getElementById(`submissions-${i}`);
+            if (container.children.length === 0) {
+              container.innerHTML =
+                '<div class="loading-text">No submissions assigned</div>';
+            }
+          }
+
+          // Render the "by submission" view
+          renderSubmissionsByName();
+
+          // Apply default highlight for number 1
+          applyHighlights();
+        } catch (error) {
+          console.error("Error loading submissions:", error);
+          // Show error in all containers
+          for (let i = 1; i <= 6; i++) {
+            const container = document.getElementById(`submissions-${i}`);
+            container.innerHTML =
+              '<div class="error-text">Error loading data</div>';
+          }
+        }
+      }
+
+      // Function to render submissions grouped by name
+      function renderSubmissionsByName() {
+        if (!submissionsData) return;
+
+        const container = document.getElementById("submissionsByNameContainer");
+        container.innerHTML = "";
+
+        // Sort submissions alphabetically by name
+        const sortedSubmissions = [...submissionsData.submissions].sort(
+          (a, b) => a.name.localeCompare(b.name)
+        );
+
+        sortedSubmissions.forEach((submission) => {
+          const submissionElement = document.createElement("div");
+          submissionElement.className = "submission-row";
+          submissionElement.innerHTML = `
+            <div class="submission-name">
+              ${submission.name}
+              
+            </div>
+            <div class="dice-numbers-inline">
+              ${submission.groups
+                .map((num) => `<span class="dice-number-inline">${num}</span>`)
+                .join("")}
+            </div>
+          `;
+          container.appendChild(submissionElement);
+        });
+      }
+
+      // Roll dice function
+      function rollDice() {
+        // Add rolling animation
+        const mainDice = document.getElementById("mainDice");
+        mainDice.classList.add("rolling");
+
+        // Generate random number 1-6 after animation starts
+        setTimeout(() => {
+          rolledNumber = Math.floor(Math.random() * 6) + 1;
+          mainDice.textContent = rolledNumber;
+          mainDice.classList.remove("rolling");
+          applyHighlights();
+        }, 500);
+      }
+
+      // Apply highlights based on rolled number
+      function applyHighlights() {
+        if (!rolledNumber) return;
+
+        // Clear existing highlights
+        document.querySelectorAll(".highlighted").forEach((el) => {
+          el.classList.remove("highlighted");
+        });
+
+        // Highlight main dice
+        const mainDice = document.getElementById("mainDice");
+        mainDice.classList.add("highlighted");
+
+        // Highlight relevant submissions in dice view
+        const submissionsContainer = document.getElementById(
+          `submissions-${rolledNumber}`
+        );
+        if (submissionsContainer) {
+          submissionsContainer
+            .querySelectorAll(".submission-item")
+            .forEach((item) => {
+              item.classList.add("highlighted");
+            });
+        }
+
+        // Highlight the dice itself in dice view
+        const dice = document.querySelector(
+          `.die-wrapper[data-die-number="${rolledNumber}"] .die`
+        );
+        if (dice) {
+          dice.classList.add("highlighted");
+        }
+
+        // Highlight dice numbers in submission view
+        document.querySelectorAll(".dice-number-inline").forEach((badge) => {
+          if (parseInt(badge.textContent) === rolledNumber) {
+            badge.classList.add("highlighted");
+          }
+        });
+      }
+
+      // Toggle between views
+      function toggleView() {
+        const diceContainer = document.getElementById("diceContainer");
+        const submissionsByNameContainer = document.getElementById(
+          "submissionsByNameContainer"
+        );
+        const toggleBtn = document.getElementById("toggleViewBtn");
+        const toggleIcon = document.getElementById("toggleIcon");
+
+        if (currentView === "by-dice") {
+          // Switch to by-submission view
+          diceContainer.style.display = "none";
+          submissionsByNameContainer.style.display = "block";
+          currentView = "by-submission";
+          toggleBtn.classList.remove("active");
+          toggleIcon.textContent = "📋";
+          toggleBtn.title = "Switch to Dice View";
+        } else {
+          // Switch to by-dice view
+          diceContainer.style.display = "flex";
+          submissionsByNameContainer.style.display = "none";
+          currentView = "by-dice";
+          toggleBtn.classList.add("active");
+          toggleIcon.textContent = "📋";
+          toggleBtn.title = "Switch to Submission View";
+        }
+      }
+
+      // Modal functions
+      function openModal() {
+        document.getElementById("modalOverlay").style.display = "block";
+        document.getElementById("infoModal").style.display = "block";
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        document.getElementById("modalOverlay").style.display = "none";
+        document.getElementById("infoModal").style.display = "none";
+        document.body.style.overflow = "auto";
+      }
+
+      // Close modal with Escape key
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          closeModal();
+        }
+      });
+
+      // Load submissions when page loads
+      window.addEventListener("DOMContentLoaded", loadSubmissions);
+    </script>
+  </body>
+</html>
